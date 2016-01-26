@@ -4,14 +4,17 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../deauthentication.c \
 ../main.c \
 ../pcap_helpers.c 
 
 OBJS += \
+./deauthentication.o \
 ./main.o \
 ./pcap_helpers.o 
 
 C_DEPS += \
+./deauthentication.d \
 ./main.d \
 ./pcap_helpers.d 
 

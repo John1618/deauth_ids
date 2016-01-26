@@ -10,10 +10,8 @@
 
 pcap_if_t * get_devs()
 {
-	char *dev;
 	char errbuf[PCAP_ERRBUF_SIZE];
 	pcap_if_t *alldevs;
-	int i =0;
 
 	// Prepare a list of all the devices
 	if (pcap_findalldevs(&alldevs, errbuf) == -1)
@@ -62,14 +60,16 @@ pcap_if_t * return_dev(pcap_if_t *alldevs, int index)
 //private function
 void callback(u_char *useless,const struct pcap_pkthdr* pkthdr,const u_char* packet)
 {
-  static int count = 1;
-  //mutex in here to insert the package in the queue
-
-  printf("\nPacket number [%d], length of this packet is: %d\n", count++, pkthdr->len);
+	  static int count = 0 ;
+	  //do packet processing here
+	  //the insert in clients
+	  //use mutex for that
+	  printf("\nPacket number [%d], length of this packet is: %d\n", count++, pkthdr->len);
 }
 
 void start_listening(pcap_if_t *dev)
 {
+	//this will capture all deauthentication packets
 	char filter[]="wlan type mgt subtype deauth";
 	pcap_t* descr;
 	struct bpf_program fp;        /* to hold compiled program */

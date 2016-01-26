@@ -15,5 +15,10 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+//libpthread includes
+#include <pthread.h>
+#include <time.h>
+
+
 
 #endif /* INCLUDES_H_ */
