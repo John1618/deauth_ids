@@ -41,6 +41,10 @@ unsigned char cap_info[2];
 }beacon_header;
 
 
+//constant for radio tap header 
+#define RADIOTAP_HEADER_SIZE 18
+
+
 
 //external variabled to use
 extern char errbuf[PCAP_ERRBUF_SIZE];

@@ -64,7 +64,21 @@ void callback(u_char *useless,const struct pcap_pkthdr* pkthdr,const u_char* pac
 	  //do packet processing here
 	  //the insert in clients
 	  //use mutex for that
-	  printf("\nPacket number [%d], length of this packet is: %d\n", count++, pkthdr->len);
+	char * temp;
+    char ssid[32];    
+    struct mac_header *p= (struct mac_header *)(packet+RADIOTAP_HEADER_SIZE);
+    struct frame_control *control = (struct frame_control *) p->fc;
+    temp = (char *) (packet + sizeof (struct mac_header) +sizeof (struct    beacon_header)+RADIOTAP_HEADER_SIZE);
+    if ((control->protocol == 0) && (control->type == 0) && (control->subtype == 8) )  // beacon frame
+    {        
+         memset(ssid,0,32);
+         memcpy (ssid, &temp[2], temp[1]);
+         printf ("Destination Add : %s\n", ether_ntoa ((struct ether_addr *)p->add1));
+         printf ("Source Add : %s\n", ether_ntoa ((struct ether_addr *)p->add2));
+         printf ("BSSID : %s\n", ether_ntoa ((struct ether_addr *)p->add3));
+         printf ("ssid = %s\n", ssid);
+    }	
+  printf("\nPacket number [%d], length of this packet is: %d\n", count++, pkthdr->len);
 }
 
 void start_listening(pcap_if_t *dev)
