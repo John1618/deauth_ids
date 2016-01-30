@@ -10,14 +10,17 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <pcap.h>
 #include <errno.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <netinet/ether.h>
 #include <arpa/inet.h>
 //libpthread includes
 #include <pthread.h>
 #include <time.h>
+#include <unistd.h>
 
 
 

@@ -9,16 +9,18 @@
 #define PCAP_HELPERS_H_
 
 #include "includes.h"
+#include "deauthentication.h" 
 
 //structure to help with mac reading
 typedef struct mac_header{
 unsigned char fc[2];
 unsigned char id[2];
-unsigned char add1[6];
-unsigned char add2[6];
-unsigned char add3[6];
+struct ether_addr destAddr;
+struct ether_addr srcAddr;
+struct ether_addr addr;	
 unsigned char sc[2];
 }mac_header;
+
 typedef struct frame_control{
 unsigned protocol:2;
 unsigned type:2;
@@ -40,27 +42,21 @@ unsigned char beacon_interval[2];
 unsigned char cap_info[2];
 }beacon_header;
 
-
 //constant for radio tap header 
 #define RADIOTAP_HEADER_SIZE 18
-
-
 
 //external variabled to use
 extern char errbuf[PCAP_ERRBUF_SIZE];
 
-
-
-
+extern attacked_client *head; 
 
 //lists available devices
 pcap_if_t * get_devs();
 
-void print_devs(pcap_if_t * alldevs);
+void print_devs(pcap_if_t * alldevs );
 
 pcap_if_t * return_dev(pcap_if_t *alldevs, int index);
 
 void start_listening(pcap_if_t *dev);
-
 
 #endif /* PCAP_HELPERS_H_ */

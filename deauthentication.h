@@ -8,27 +8,22 @@
 #ifndef DEAUTHENTICATION_H_
 #define DEAUTHENTICATION_H_
 
-#include"includes.h"
+#include "includes.h"
 
 #define CHECK_INTERVAL 3
 
-
-typedef struct wlan_client
+typedef struct attacked_client
 {
-	char mac[100];
-	//sent by the client to the router
-	int packets_sent;
-	//packets received from the router
-	int packets_received;
-	//last updated
-	//if too long ago free memory
-	struct timespec timestamp;
-	struct wlan_client * next;
-}wlan_client;
-
+struct ether_addr addr;	      		// client who is attackeds
+int deauth_packets_sent;	        // total no of deauth packets sent by client to ap in response to a request of deauth from ap	
+int deauth_packets_rcvd; 		// total no of deauth packets received from ap
+//struct timespec timestamp; 		// last update			
+struct attacked_client *next;
+}attacked_client;
 
 
 void *check_clients(void *arg);
-
+attacked_client * add_client(attacked_client *head, char *clientAddr, int inc_sent, int inc_rcvd); //, timespec timestamp);
+void print_attacked_clients(attacked_client *head);
 
 #endif /* DEAUTHENTICATION_H_ */
