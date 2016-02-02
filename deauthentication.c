@@ -6,6 +6,7 @@
  */
 #include "deauthentication.h"
 
+int max(int n1, int n2);
 
 void write_alert(char* filename, char* mac_ap, char* mac_user)
 {
@@ -21,35 +22,45 @@ void * check_clients(void *arg)
 {
 	while (1)
 	{
-			attacked_client *aux = head;
-
-			while ( aux != NULL )
+		attacked_client *aux = head;
+		attacked_client *ant = head;	
+		while ( aux != NULL )
+		{  
+			if( max ( aux->deauth_packets_sent, aux->deauth_packets_rcvd) >= deauth_packets_limit )
 			{
-				if(aux->deauth_packets_sent+ aux->deauth_packets_rcvd>3)
-				{
-						write_alert(log_file_name, mac_ap ,ether_ntoa( &aux->addr));
-						attacked_client *nod = aux;
-						aux=aux->next;
-						free(nod);
-						if(!aux)
-							break;
-						printf("bingo!!! l-am prins pe fraier!!!\n");
+				write_alert(log_file_name, mac_ap ,ether_ntoa( &aux->addr) );
+				if(ant == head )
+				{		
+					head = aux->next;
 				}
-
-				aux = aux->next;
+				else if(aux->next == NULL)
+				{
+					ant->next = NULL;
+			        }
+				else
+				{
+					ant->next=aux->next;
+				}
+				
+				if(!aux)
+				break;
+				printf("Attack on client:%s\n", ether_ntoa( &aux->addr ) );
 			}
-			sleep(1);
+                        ant = aux;	
+			aux = aux->next;  // ant->next is aux
+		}
+					
+		//sleep(1);
 	}
 	return NULL;
-
-};
+}
 
 attacked_client * add_client(attacked_client *head, char* clientAddr, int inc_sent, int inc_rcvd) //, timespec timestamp)
 {
 	print_attacked_clients(head);
 	if ( head == NULL )
 	{
-		printf("list is empty\n");
+		//printf("list is empty\n");
 		attacked_client *client = (attacked_client *) malloc( sizeof(attacked_client) );
    		client->addr = *ether_aton( clientAddr ); 
 		client->deauth_packets_sent = inc_sent;
@@ -74,18 +85,15 @@ attacked_client * add_client(attacked_client *head, char* clientAddr, int inc_se
 		// if the client is already in list
 		if (aux == head || aux == NULL)
 		{
-
 			aux->deauth_packets_sent += inc_sent;
 			aux->deauth_packets_rcvd += inc_rcvd;
 		}
 		else
 		{		
-
 			attacked_client *newClient = (attacked_client *) malloc( sizeof( attacked_client) );
 			newClient->addr = *ether_aton( clientAddr );
 			newClient->deauth_packets_sent = inc_sent;
-    		newClient->deauth_packets_rcvd = inc_rcvd;
-			//client->timestamp = timestamp;
+    			newClient->deauth_packets_rcvd = inc_rcvd;
 			newClient->next = NULL;
 			aux->next = newClient;			
 		}
@@ -107,3 +115,10 @@ void print_attacked_clients(attacked_client *head)
 	printf("-----------------------------------\n");
 }
 
+int max(int n1, int n2)
+{
+	if (n1 >= n2) 
+		return n1;
+
+return n2;
+}

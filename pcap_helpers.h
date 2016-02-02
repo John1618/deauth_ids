@@ -35,13 +35,6 @@ unsigned wep:1;
 unsigned order:1;
 }frame_control;
 
-typedef struct beacon_header{
-unsigned char timestamp[8];
-
-unsigned char beacon_interval[2];
-unsigned char cap_info[2];
-}beacon_header;
-
 //constant for radio tap header
 #define RADIOTAP_HEADER_SIZE 18
 
@@ -52,7 +45,6 @@ extern attacked_client *head;
 
 extern int deauth_packets_limit;
 extern char mac_ap[30];
-
 
 //lists available devices
 pcap_if_t * get_devs();

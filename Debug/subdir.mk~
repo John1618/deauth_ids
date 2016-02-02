@@ -9,17 +9,20 @@ O_SRCS += \
 C_SRCS += \
 ../deauthentication.c \
 ../main.c \
-../pcap_helpers.c 
+../pcap_helpers.c \
+../socketuri.c 
 
 OBJS += \
 ./deauthentication.o \
 ./main.o \
-./pcap_helpers.o 
+./pcap_helpers.o \
+./socketuri.o 
 
 C_DEPS += \
 ./deauthentication.d \
 ./main.d \
-./pcap_helpers.d 
+./pcap_helpers.d \
+./socketuri.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

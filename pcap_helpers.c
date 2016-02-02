@@ -36,15 +36,16 @@ int select_wlan_dev(pcap_if_t *alldevs)
 	}
 	return 0;
 }
-//print all devices in an ordered fashion
 
+//print all devices in an ordered fashion
 void print_devs(pcap_if_t * alldevs)
 {
 	pcap_if_t *d ;
 	int i = 0 ; //used to order device
 	printf("Here are the available interfaces to listen to:\n");
 	for(d=alldevs; d; d=d->next)
-	{
+	{ 
+		
 		printf("[%d] %s", ++i, d->name);
 		if (d->description)
 		{
@@ -54,6 +55,7 @@ void print_devs(pcap_if_t * alldevs)
 		{
 			printf(" (Sorry, No description available for this device)\n");
 		}
+		
 	}
 }
 
@@ -77,10 +79,7 @@ pcap_if_t * return_dev(pcap_if_t *alldevs, int index)
 
 void callback(u_char *useless, const struct pcap_pkthdr* pkthdr, const u_char* packet)
 {
-    printf("In callback...\n");
-    //static int count = 0 ;
-    //char * temp;
-    //char ssid[32];
+   
     struct mac_header *p= (struct mac_header *)(packet + RADIOTAP_HEADER_SIZE);
     struct frame_control *control = (struct frame_control *) p->fc;
     
@@ -94,21 +93,22 @@ void callback(u_char *useless, const struct pcap_pkthdr* pkthdr, const u_char* p
 		strcpy(srcAddr, ether_ntoa ( &p->srcAddr ) );
 		strcpy(bssidAddr, ether_ntoa ( &p->addr ) );
  
-
-		if ( strcmp( srcAddr, bssidAddr) == 0 )		// srcAddr eq BSSID
+          if ( !strcmp( srcAddr, "ff:ff:ff:ff:ff:ff" ) )
+	  {  
+		printf("======================================\n");
+	   	if ( strcmp( srcAddr, bssidAddr) == 0 )		// srcAddr eq BSSID
 		{
-			printf("increment rcv packets...");
+			//printf("increment rcv packets...\n");
 			head = add_client(head, destAddr, 0, 1);
 			}
 		else										// dstAddr eq BSSID
 		{
-			printf("increment sent packets...");
+			//printf("increment sent packets...\n");
 			head = add_client(head, srcAddr, 1, 0);
 		}
-	
+	 }
     }	
     //printf("\nPacket number [%d], length of this packet is: %d\n", count++, pkthdr->len);
-    //print_attacked_clients(head);
 }
 
 void start_listening(pcap_if_t *dev, char* AP_ADDRESS)
@@ -151,8 +151,7 @@ void start_listening(pcap_if_t *dev, char* AP_ADDRESS)
 		exit(1);
 	}
 		
-	pcap_loop(descr, 64, callback, NULL);
-    	
+	pcap_loop(descr, 0, callback, NULL); 	
 }
 
 

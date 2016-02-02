@@ -6,7 +6,6 @@
  */
 #include "deauthentication.h"
 #include "pcap_helpers.h"
-#include "socketuri.h"
 
 char errbuf[PCAP_ERRBUF_SIZE];
 int deauth_packets_limit;
@@ -32,16 +31,13 @@ int main (int argc, char** argv)
 	strcpy(log_file_name,argv[LOG_FILE_NAME_INDEX]);
 	deauth_packets_limit = atoi(argv[DEAUTH_LIMIT_INDEX]);
 
-
 	pcap_if_t * alldevs, *dev;
 	pthread_t checker;
 	int choice = 0;
 
-
 	alldevs = get_devs( );
 	choice = select_wlan_dev(alldevs);
 	dev = return_dev(alldevs, choice);
-
 
 	printf("Starting...\n");
 
