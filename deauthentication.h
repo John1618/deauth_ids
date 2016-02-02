@@ -22,8 +22,15 @@ struct attacked_client *next;
 }attacked_client;
 
 
+extern attacked_client *head;
+extern int deauth_packets_limit;
+extern char mac_ap[30];
+extern char log_file_name[60];
+
 void *check_clients(void *arg);
 attacked_client * add_client(attacked_client *head, char *clientAddr, int inc_sent, int inc_rcvd); //, timespec timestamp);
 void print_attacked_clients(attacked_client *head);
+
+
 
 #endif /* DEAUTHENTICATION_H_ */

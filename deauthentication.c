@@ -7,14 +7,38 @@
 #include "deauthentication.h"
 
 
+void write_alert(char* filename, char* mac_ap, char* mac_user)
+{
+	FILE* f=fopen(filename,"a+");
+
+	fprintf(f,"%s %s\n",mac_user,mac_ap);
+
+	fclose(f);
+}
+
 /* this function is run by the second thread */
 void * check_clients(void *arg)
 {
 	while (1)
 	{
-		//parse list to spot deauth attacks
-		printf("I am testing this\n");
-		sleep(CHECK_INTERVAL);
+			attacked_client *aux = head;
+
+			while ( aux != NULL )
+			{
+				if(aux->deauth_packets_sent+ aux->deauth_packets_rcvd>3)
+				{
+						write_alert(log_file_name, mac_ap ,ether_ntoa( &aux->addr));
+						attacked_client *nod = aux;
+						aux=aux->next;
+						free(nod);
+						if(!aux)
+							break;
+						printf("bingo!!! l-am prins pe fraier!!!\n");
+				}
+
+				aux = aux->next;
+			}
+			sleep(1);
 	}
 	return NULL;
 
@@ -22,13 +46,15 @@ void * check_clients(void *arg)
 
 attacked_client * add_client(attacked_client *head, char* clientAddr, int inc_sent, int inc_rcvd) //, timespec timestamp)
 {
+	print_attacked_clients(head);
 	if ( head == NULL )
-	{       printf("list is empty\n");
+	{
+		printf("list is empty\n");
 		attacked_client *client = (attacked_client *) malloc( sizeof(attacked_client) );
    		client->addr = *ether_aton( clientAddr ); 
 		client->deauth_packets_sent = inc_sent;
 		client->deauth_packets_rcvd = inc_rcvd;
-		//client->timestamp = timestamp;
+
 		head = client;
 		head->next = NULL;
 	}
@@ -48,17 +74,17 @@ attacked_client * add_client(attacked_client *head, char* clientAddr, int inc_se
 		// if the client is already in list
 		if (aux == head || aux == NULL)
 		{
-			printf("update client...\n");
+
 			aux->deauth_packets_sent += inc_sent;
 			aux->deauth_packets_rcvd += inc_rcvd;
 		}
 		else
 		{		
-			printf("add new client...\n");
+
 			attacked_client *newClient = (attacked_client *) malloc( sizeof( attacked_client) );
 			newClient->addr = *ether_aton( clientAddr );
 			newClient->deauth_packets_sent = inc_sent;
-    			newClient->deauth_packets_rcvd = inc_rcvd;
+    		newClient->deauth_packets_rcvd = inc_rcvd;
 			//client->timestamp = timestamp;
 			newClient->next = NULL;
 			aux->next = newClient;			

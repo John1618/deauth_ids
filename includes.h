@@ -8,6 +8,9 @@
 #ifndef INCLUDES_H_
 #define INCLUDES_H_
 
+#include <sys/types.h>
+#include <sys/un.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,6 +20,7 @@
 #include <netinet/in.h>
 #include <netinet/ether.h>
 #include <arpa/inet.h>
+//
 //libpthread includes
 #include <pthread.h>
 #include <time.h>
