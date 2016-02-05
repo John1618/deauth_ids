@@ -11,9 +11,9 @@ int max(int n1, int n2);
 void write_alert(char* filename, char* mac_ap, char* mac_user)
 {
 	FILE* f=fopen(filename,"a+");
-
-	fprintf(f,"%s %s\n",mac_user,mac_ap);
-
+	//insert here ciob's insert function
+	fprintf(f,"MAC %s has been deauthenticated from %s\n",mac_user,mac_ap);
+	insert_into_db("root","root",mac_user,mac_ap);
 	fclose(f);
 }
 

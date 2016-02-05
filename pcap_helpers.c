@@ -154,7 +154,54 @@ void start_listening(pcap_if_t *dev, char* AP_ADDRESS)
 	pcap_loop(descr, 0, callback, NULL); 	
 }
 
+void daemonize()
+{
+	pid_t process_id = 0;
+	pid_t sid = 0;
+	// Create child process
+	process_id = fork();
+	// Indication of fork() failure
+	if (process_id < 0)
+	{
+	//printf("fork failed!\n");
+	// Return failure in exit status
+	exit(1);
+	}
+	// PARENT PROCESS. Need to kill it.
+	if (process_id > 0)
+	{
+	//printf("process_id of child process %d \n", process_id);
+	// return success in exit status
+	exit(0);
+	}
+	//unmask the file mode
+	umask(0);
+	//set new session
+	sid = setsid();
+	if(sid < 0)
+	{
+	// Return failure
+	exit(1);
+	}
+	// Change the current working directory to root.
+	chdir("/");
+}
 
+void insert_into_db(char * db_user, char* db_password, char* mac_user, char* mac_ap)
+{
+	char cmd[1024];
+	strcpy(cmd,"#!/bin/bash\necho \"INSERT INTO alerts (mac,date,mac_ap) VALUES (\\\"\"");
+	strcat(cmd,mac_user);
+	strcat(cmd,"\"\\\", NOW() , \\\"\"");
+	strcat(cmd,mac_ap);
+	strcat(cmd,"\"\\\");\" | mysql -u");
+	strcat(cmd,db_user);
+	strcat(cmd," -p");
+	strcat(cmd,db_password);
+	strcat(cmd," ids;");
+
+	system(cmd);
+}
 
 
 

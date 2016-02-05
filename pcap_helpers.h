@@ -57,4 +57,9 @@ pcap_if_t * return_dev(pcap_if_t *alldevs, int index);
 
 void start_listening(pcap_if_t *dev,char* ap_address);
 
+//added by John
+void daemonize();
+void insert_into_db(char * db_user, char* db_password, char* mac_user, char* mac_ap);
+
+
 #endif /* PCAP_HELPERS_H_ */

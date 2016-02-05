@@ -20,6 +20,8 @@ char log_file_name[60];
 
 int main (int argc, char** argv)
 {
+	//run process in background
+	daemonize();
 	if(argc!=PARAMETERS_NUMBER)
 	{
 		printf("Something wrong with parameters!!!\n");
@@ -42,6 +44,10 @@ int main (int argc, char** argv)
 	printf("Starting...\n");
 
 	// put interface to monitor mode //
+	while(1)
+	{
+		sleep(1000);
+	}
 	pcap_t *handler = pcap_create(dev->name, errbuf);
 	if(pcap_set_rfmon(handler, 1) == 0 )
 	{
