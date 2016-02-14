@@ -12,6 +12,9 @@ int deauth_packets_limit;
 char mac_ap[30];
 char log_file_name[60];
 
+//function pointer that stores the checking method
+void (*detect_attack) (attacked_client *);
+
 #define AP_MAC_INDEX 1
 #define DEAUTH_LIMIT_INDEX 2
 #define LOG_FILE_NAME_INDEX 3
@@ -32,6 +35,9 @@ int main (int argc, char** argv)
 	strcpy(mac_ap,argv[AP_MAC_INDEX]);
 	strcpy(log_file_name,argv[LOG_FILE_NAME_INDEX]);
 	deauth_packets_limit = atoi(argv[DEAUTH_LIMIT_INDEX]);
+	//hardcode the detect_attack function to smart_checking
+	//let user choose from parameters
+	detect_attack = &smart_checking;
 
 	pcap_if_t * alldevs, *dev;
 	pthread_t checker;
@@ -44,10 +50,7 @@ int main (int argc, char** argv)
 	printf("Starting...\n");
 
 	// put interface to monitor mode //
-	while(1)
-	{
-		sleep(1000);
-	}
+
 	pcap_t *handler = pcap_create(dev->name, errbuf);
 	if(pcap_set_rfmon(handler, 1) == 0 )
 	{
@@ -62,5 +65,3 @@ int main (int argc, char** argv)
 
 	return 0;
 }
-
-
